@@ -3,8 +3,10 @@ import { isFirebaseId } from '$lib/utils';
 import { json } from '@sveltejs/kit';
 import { getAuth } from 'firebase-admin/auth';
 import { getDatabase, ServerValue } from 'firebase-admin/database';
-import { PUBLIC_YJS_SERVER } from '$env/static/public';
-import { YJS_SECURITY_KEY } from '$env/static/private';
+
+// Используем process.env вместо $env/static/public
+const PUBLIC_YJS_SERVER = process.env.PUBLIC_YJS_SERVER || 'wss://yjs.usaco.guide:443';
+const YJS_SECURITY_KEY = process.env.YJS_SECURITY_KEY || '';
 
 const YJS_SERVER_API = PUBLIC_YJS_SERVER.replace('ws://', 'http://').replace('wss://', 'https://');
 
@@ -92,7 +94,6 @@ export async function POST({ request }) {
 		})
 			.then((resp) => resp.text())
 			.then((resp) => {
-				// it's ok if source file doesn't exist -- maybe the file only had Java and not C++
 				if (resp !== 'OK' && resp !== "Source file doesn't exist") {
 					throw new Error('Failed to copy file ' + `${fileId}.${key}` + ': ' + resp);
 				}
