@@ -3,17 +3,5 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".svelte-kit/output",
   "installCommand": "npm install",
-  "framework": "sveltekit",
-  "functions": {
-    "src/routes/**/*.ts": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/sveltekit"
-    }
-  ]
+  "framework": "sveltekit"
 }
