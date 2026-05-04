@@ -1,0 +1,114 @@
+@import 'tailwindcss';
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant huacat-pink (&:where([data-theme=huacat-pink], [data-theme=huacat-pink] *));
+
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+
+@theme {
+	--color-monaco-editor-bg: #1e1e1e;
+
+	/* Semantic colors for light theme (default) */
+	/* Colors used for primary actions like button background color */
+	--color-primary: var(--color-indigo-600);
+	--color-primary-hover: var(--color-indigo-700);
+	--color-primary-focus: var(--color-indigo-500);
+
+	/* Background color for the webpage */
+	--color-bg-primary: var(--color-white);
+	/* Border color for the webpage. Must go well with the background color. */
+	--color-bg-border-primary: var(--color-neutral-300);
+	/* Hover background color for the webpage */
+	--color-bg-hover-primary: var(--color-neutral-100);
+
+	/* Text color for the webpage */
+	--color-text-primary: var(--color-black);
+	--color-text-secondary: var(--color-neutral-500);
+
+	/* Link colors */
+	--color-link: var(--color-indigo-600);
+
+	/* Gutter colors for IDE layout dividers */
+	--color-gutter: var(--color-neutral-200);
+	--color-gutter-hover: var(--color-neutral-300);
+}
+
+@layer theme {
+	:root,
+	:host {
+		/* Dark theme color overrides */
+		@variant dark {
+			--color-primary: var(--color-indigo-600);
+			--color-primary-hover: var(--color-indigo-700);
+			--color-primary-focus: var(--color-indigo-500);
+
+			--color-bg-primary: var(--color-monaco-editor-bg);
+			--color-bg-border-primary: var(--color-neutral-700);
+			--color-bg-hover-primary: var(--color-neutral-800);
+
+			--color-text-primary: var(--color-neutral-100);
+			--color-text-secondary: var(--color-neutral-400);
+
+			--color-link: var(--color-indigo-300);
+
+			--color-gutter: var(--color-black);
+			--color-gutter-hover: var(--color-neutral-600);
+		}
+
+		/* Huacat Pink theme color overrides */
+		@variant huacat-pink {
+			--color-primary: #cf6bae;
+			--color-primary-hover: #b85a9e;
+			--color-primary-focus: #cf6bae;
+
+			--color-bg-primary: #f5eaf5;
+			--color-bg-border-primary: #d5c5d5;
+			--color-bg-hover-primary: #f0e5f0;
+
+			--color-text-primary: var(--color-black);
+			--color-text-secondary: var(--color-neutral-600);
+
+			--color-link: var(--color-pink-700);
+
+			--color-gutter: #e5d5e5;
+			--color-gutter-hover: #d5c5d5;
+		}
+	}
+}
+
+body {
+	/* Matches the color of monaco-editor */
+	/* background-color: var(--color-monaco-editor-bg); */
+
+	@apply bg-[var(--color-bg-primary)] text-[var(--color-text-primary)];
+}
+
+/* Styles for remote cursors for monaco */
+.yRemoteSelection {
+	/* background-color: rgb(250, 129, 0, 0.5); */
+	background-color: var(--yjs-selection-color-bg, rgb(250, 129, 0, 0.5));
+}
+.yRemoteSelectionHead {
+	position: absolute;
+	border-left: var(--yjs-selection-color, orange) solid 2px;
+	border-top: var(--yjs-selection-color, orange) solid 2px;
+	border-bottom: var(--yjs-selection-color, orange) solid 2px;
+	height: 100%;
+	box-sizing: border-box;
+}
+.yRemoteSelectionHead::after {
+	position: absolute;
+	content: ' ';
+	border: 3px solid var(--yjs-selection-color, orange);
+	border-radius: 4px;
+	left: -4px;
+	top: -5px;
+}
+
+button {
+	@apply cursor-pointer;
+}
+
+.firebase-emulator-warning {
+	display: none;
+}
