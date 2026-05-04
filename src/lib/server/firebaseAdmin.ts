@@ -1,34 +1,39 @@
-import { PUBLIC_USE_FIREBASE_EMULATORS } from '$env/static/public';
-import { getApp, getApps, initializeApp, cert } from 'firebase-admin/app';
-import {
-	FIREBASE_PROJECT_ID,
-	FIREBASE_PRIVATE_KEY,
-	FIREBASE_CLIENT_EMAIL,
-	FIREBASE_DATABASE_URL
-} from '$env/static/private';
+import { initializeApp, cert, ServiceAccount } from 'firebase-admin/app';
+import { getDatabase } from 'firebase-admin/database';
+import { getAuth } from 'firebase-admin/auth';
 
-if (getApps().length === 0) {
-	if (PUBLIC_USE_FIREBASE_EMULATORS !== 'true') {
-		if (!FIREBASE_PROJECT_ID) {
-			throw new Error('Missing required firebase environment variables');
-		} else {
-			initializeApp({
-				credential: cert({
-					projectId: FIREBASE_PROJECT_ID,
-					privateKey: FIREBASE_PRIVATE_KEY,
-					clientEmail: FIREBASE_CLIENT_EMAIL
-				}),
-				databaseURL: FIREBASE_DATABASE_URL
-			});
-		}
-	} else {
-		initializeApp({
-			projectId: 'cp-ide-2',
-			databaseURL: 'http://127.0.0.1:9000?ns=cp-ide-2-default-rtdb'
-		});
-	}
+// Используем process.env вместо $env/static (надежнее для Vercel)
+const USE_EMULATORS = process.env.PUBLIC_USE_FIREBASE_EMULATORS === 'true';
+
+// Получаем переменные из process.env
+const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
+const FIREBASE_CLIENT_EMAIL = process.env.FIREBASE_CLIENT_EMAIL;
+const FIREBASE_PRIVATE_KEY = process.env.FIREBASE_PRIVATE_KEY;
+const FIREBASE_DATABASE_URL = process.env.FIREBASE_DATABASE_URL;
+
+if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) {
+  console.error('Missing Firebase Admin SDK environment variables');
 }
 
-const firebaseApp = getApp();
+// Создаем service account объект
+const serviceAccount: ServiceAccount = {
+  projectId: FIREBASE_PROJECT_ID,
+  clientEmail: FIREBASE_CLIENT_EMAIL,
+  privateKey: FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'), // Важно для правильного формата
+};
+
+// Инициализируем Firebase Admin
+const firebaseApp = initializeApp({
+  credential: cert(serviceAccount),
+  databaseURL: FIREBASE_DATABASE_URL,
+});
+
+// Если нужны эмуляторы (только для разработки)
+if (USE_EMULATORS) {
+  // Настройка эмуляторов для локальной разработки
+  process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099';
+  process.env.FIREBASE_DATABASE_EMULATOR_HOST = 'localhost:9000';
+}
 
 export default firebaseApp;
+export { getDatabase, getAuth };
