@@ -28,3 +28,26 @@ firebase-debug.log
 ui-debug.log
 
 .DS_Store
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Secrets and keys
+*.key
+*.pem
+*secret*
+*private*
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.svelte-kit/
+
+# OS files
+.DS_Store
+Thumbs.db
